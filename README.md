@@ -41,7 +41,7 @@ stats requested in the constructor (which by default is io and status).
 
 For example:
 
-```json
+```text
 { io: 
    { rchar: '61960',
      wchar: '79',
