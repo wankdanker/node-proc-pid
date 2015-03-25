@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/wankdanker/node-proc-pid/issues"
   },
-  "homepage": "https://github.com/wankdanker/node-proc-pid"
+  "homepage": "https://github.com/wankdanker/node-proc-pid",
+  "dependencies": {
+    "autocast": "0.0.4"
+  }
 }

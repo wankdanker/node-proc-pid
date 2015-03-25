@@ -1,5 +1,6 @@
 var readFile = require('fs').readFile
 	, join = require('path').join
+	, autocast = require('autocast')
 	;
 
 module.exports = function (options) {
@@ -56,7 +57,7 @@ ProcPidReader.prototype.parse = function (data) {
 	data.split('\n').forEach(function (line) {
 		var toks = line.split(/:/);
 		if (toks.length === 2) {		
-			result[toks[0].trim()] = toks[1].trim();
+			result[toks[0].trim()] = autocast(toks[1].trim());
 		}
 		else {
 			//TODO: do something about this	
