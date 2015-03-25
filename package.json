@@ -1,0 +1,25 @@
+{
+  "name": "proc-pid",
+  "version": "1.0.0",
+  "description": "Read select \"files\" from /proc/:pid/*",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wankdanker/node-proc-pid"
+  },
+  "keywords": [
+    "proc",
+    "pid",
+    "status",
+    "io"
+  ],
+  "author": "Dan VerWeire",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wankdanker/node-proc-pid/issues"
+  },
+  "homepage": "https://github.com/wankdanker/node-proc-pid"
+}
