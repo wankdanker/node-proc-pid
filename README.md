@@ -1,7 +1,7 @@
 proc-pid
 --------
 
-Read select \"files\" from /proc/:pid/
+Read select "files" from /proc/:pid/
 
 install
 -------
