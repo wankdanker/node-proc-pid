@@ -24,5 +24,8 @@
   "homepage": "https://github.com/wankdanker/node-proc-pid",
   "dependencies": {
     "autocast": "0.0.4"
+  },
+  "devDependencies": {
+    "tape": "^4.4.0"
   }
 }
