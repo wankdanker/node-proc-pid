@@ -11,7 +11,9 @@ module.exports = function (options) {
 module.exports.options = {
 	stats : ['io', 'status', 'cmdline'],
 	// target is a symbolic link's string value
-	rl: ['cwd', 'exe', 'root']
+	rl: ['cwd', 'exe', 'root'],
+	// some proc file organize by colons
+	parseColonFile: ['io', 'status']
 }
 
 module.exports.ProcPidReader = ProcPidReader
@@ -45,8 +47,11 @@ ProcPidReader.prototype.pid = function (pid, cb) {
 
 		function handleContent(err, data) {
 			pending -= 1;
-
-			result[stat] = self.parse(data);
+			if(self.options.parseColonFile.indexOf(stat) >= 0) {
+				result[stat] = self.parse(data);
+			} else {
+				result[stat] = data.replace(/\u0000/ig, ' ');
+			}
 			
 			maybeFinish(err);
 		}
