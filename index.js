@@ -1,4 +1,5 @@
 var readFile = require('fs').readFile
+	, readLink = require('fs').readlink
 	, join = require('path').join
 	, autocast = require('autocast')
 	;
@@ -8,7 +9,9 @@ module.exports = function (options) {
 };
 
 module.exports.options = {
-	stats : ['io', 'status']
+	stats : ['io', 'status', 'cmdline'],
+	// target is a symbolic link's string value
+	rl: ['cwd', 'exe', 'root']
 }
 
 module.exports.ProcPidReader = ProcPidReader
@@ -34,13 +37,19 @@ ProcPidReader.prototype.pid = function (pid, cb) {
 	self.options.stats.forEach(function (stat) {
 		pending += 1;
 
-		readFile(join('/proc', pid.toString(), stat), 'utf8', function (err, data) {
+		if(self.options.rl.indexOf(stat) >= 0) {
+			readLink(join('/proc', pid.toString(), stat), handleContent);
+		} else {
+			readFile(join('/proc', pid.toString(), stat), 'utf8', handleContent);
+		}
+
+		function handleContent(err, data) {
 			pending -= 1;
 
 			result[stat] = self.parse(data);
 			
 			maybeFinish(err);
-		});
+		}
 	});
 
 	function maybeFinish(err) {
