@@ -60,6 +60,7 @@ ProcPidReader.prototype.pid = function (pid, cb) {
 };
 
 ProcPidReader.prototype.parse = function (data) {
+	if('string' !== typeof data) return data;
 	var self = this;
 	var result = {};
 
