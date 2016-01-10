@@ -1,4 +1,5 @@
 var readFile = require('fs').readFile
+	, readLink = require('fs').readlink
 	, join = require('path').join
 	, autocast = require('autocast')
 	;
@@ -8,7 +9,11 @@ module.exports = function (options) {
 };
 
 module.exports.options = {
-	stats : ['io', 'status']
+	stats : ['io', 'status', 'cmdline'],
+	// target is a symbolic link's string value
+	rl: ['cwd', 'exe', 'root'],
+	// some proc file organize by colons
+	parseColonFile: ['io', 'status']
 }
 
 module.exports.ProcPidReader = ProcPidReader
@@ -16,8 +21,9 @@ module.exports.ProcPidReader = ProcPidReader
 function ProcPidReader (options) {
 	var self = this;
 
-	self.options = options || module.exports.options;
-	self.options.stats = self.options.stats || module.exports.options.stats;
+	// self.options = options || module.exports.options;
+	self.options = module.exports.options;
+	if(options.stats) self.options.stats = options.stats;
 }
 
 ProcPidReader.prototype.pid = function (pid, cb) {
@@ -34,13 +40,22 @@ ProcPidReader.prototype.pid = function (pid, cb) {
 	self.options.stats.forEach(function (stat) {
 		pending += 1;
 
-		readFile(join('/proc', pid.toString(), stat), 'utf8', function (err, data) {
-			pending -= 1;
+		if(self.options.rl.indexOf(stat) >= 0) {
+			readLink(join('/proc', pid.toString(), stat), handleContent);
+		} else {
+			readFile(join('/proc', pid.toString(), stat), 'utf8', handleContent);
+		}
 
-			result[stat] = self.parse(data);
+		function handleContent(err, data) {
+			pending -= 1;
+			if(self.options.parseColonFile.indexOf(stat) >= 0) {
+				result[stat] = self.parse(data);
+			} else {
+				result[stat] = data.replace(/\u0000/ig, ' ');
+			}
 			
 			maybeFinish(err);
-		});
+		}
 	});
 
 	function maybeFinish(err) {
@@ -51,6 +66,7 @@ ProcPidReader.prototype.pid = function (pid, cb) {
 };
 
 ProcPidReader.prototype.parse = function (data) {
+	if('string' !== typeof data) return data;
 	var self = this;
 	var result = {};
 
