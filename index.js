@@ -21,8 +21,9 @@ module.exports.ProcPidReader = ProcPidReader
 function ProcPidReader (options) {
 	var self = this;
 
-	self.options = options || module.exports.options;
-	self.options.stats = self.options.stats || module.exports.options.stats;
+	// self.options = options || module.exports.options;
+	self.options = module.exports.options;
+	if(options.stats) self.options.stats = options.stats;
 }
 
 ProcPidReader.prototype.pid = function (pid, cb) {
